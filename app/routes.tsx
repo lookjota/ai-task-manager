@@ -1,81 +1,81 @@
-import { useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card"
-import { Input } from "~/components/ui/input"
-import { Button } from "~/components/ui/button"
-import { ScrollArea } from "~/components/ui/scroll-area"
+import { useState, useRef, useEffect } from 'react'
 import { Send, Bot, User } from 'lucide-react'
+import { Button } from '~/components/ui/button'
+import { Input } from '~/components/ui/input'
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '~/components/ui/card'
+import { ScrollArea } from '~/components/ui/scroll-area'
+import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar'
+import { Badge } from '~/components/ui/badge'
 
 interface Message {
   id: string
   content: string
-  role: 'user' | 'bot'
+  sender: 'user' | 'bot'
   timestamp: Date
 }
 
-// Placeholder data
-const initialMessages: Message[] = [
-  {
-    id: '1',
-    content: 'Hello! I\'m your AI assistant. How can I help you today?',
-    role: 'bot',
-    timestamp: new Date(Date.now() - 300000)
-  },
-  {
-    id: '2',
-    content: 'Hi there! Can you help me understand how machine learning works?',
-    role: 'user',
-    timestamp: new Date(Date.now() - 240000)
-  },
-  {
-    id: '3',
-    content: 'I\'d be happy to explain machine learning! Machine learning is a subset of artificial intelligence that enables computers to learn and make decisions from data without being explicitly programmed for every scenario. It works by finding patterns in data and using those patterns to make predictions or decisions about new, unseen data.',
-    role: 'bot',
-    timestamp: new Date(Date.now() - 180000)
-  },
-  {
-    id: '4',
-    content: 'That\'s really interesting! Can you give me a simple example?',
-    role: 'user',
-    timestamp: new Date(Date.now() - 120000)
-  },
-  {
-    id: '5',
-    content: 'Here\'s a simple example: Imagine you want to predict house prices. You feed a machine learning model thousands of examples of houses with their features (size, location, number of bedrooms, etc.) and their actual sale prices. The model learns the relationship between these features and prices. Then, when you show it a new house, it can predict the price based on the patterns it learned from the training data.',
-    role: 'bot',
-    timestamp: new Date(Date.now() - 60000)
-  }
+const botResponses = [
+  "Hello! How can I help you today?",
+  "That's an interesting question. Let me think about that...",
+  "I understand what you're asking. Here's what I think:",
+  "Thanks for sharing that with me. I'd be happy to help!",
+  "That's a great point. Have you considered this perspective?",
+  "I'm here to assist you with any questions you might have.",
+  "Let me help you with that. What specific information are you looking for?",
+  "I appreciate you reaching out. How can I make your day better?",
 ]
 
-export default function ChatbotUI() {
-  const [messages, setMessages] = useState<Message[]>(initialMessages)
+export default function ChatBot() {
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: '1',
+      content: "Hi there! I'm your AI assistant. How can I help you today?",
+      sender: 'bot',
+      timestamp: new Date(),
+    },
+  ])
   const [inputValue, setInputValue] = useState('')
   const [isTyping, setIsTyping] = useState(false)
+  const scrollAreaRef = useRef<HTMLDivElement>(null)
 
-  const handleSendMessage = () => {
+  const scrollToBottom = () => {
+    if (scrollAreaRef.current) {
+      const scrollContainer = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]')
+      if (scrollContainer) {
+        scrollContainer.scrollTop = scrollContainer.scrollHeight
+      }
+    }
+  }
+
+  useEffect(() => {
+    scrollToBottom()
+  }, [messages])
+
+  const handleSendMessage = async () => {
     if (!inputValue.trim()) return
 
-    const newUserMessage: Message = {
+    const userMessage: Message = {
       id: Date.now().toString(),
       content: inputValue,
-      role: 'user',
-      timestamp: new Date()
+      sender: 'user',
+      timestamp: new Date(),
     }
 
-    setMessages(prev => [...prev, newUserMessage])
+    setMessages(prev => [...prev, userMessage])
     setInputValue('')
     setIsTyping(true)
 
-    // Simulate bot response
+    // Simulate bot response delay
     setTimeout(() => {
-      const botResponse: Message = {
+      const botMessage: Message = {
         id: (Date.now() + 1).toString(),
-        content: 'Thank you for your message! This is a simulated response from the AI assistant. In a real implementation, this would be connected to an actual AI service.',
-        role: 'bot',
-        timestamp: new Date()
+        content: botResponses[Math.floor(Math.random() * botResponses.length)],
+        sender: 'bot',
+        timestamp: new Date(),
       }
-      setMessages(prev => [...prev, botResponse])
+      setMessages(prev => [...prev, botMessage])
       setIsTyping(false)
-    }, 1500)
+    }, 1000 + Math.random() * 2000)
   }
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -86,113 +86,123 @@ export default function ChatbotUI() {
   }
 
   const formatTime = (date: Date) => {
-    return date.toLocaleTimeString('en-US', { 
-      hour: '2-digit', 
+    return date.toLocaleTimeString('en-US', {
+      hour: '2-digit',
       minute: '2-digit',
-      hour12: false 
     })
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 flex items-center justify-center">
-      <Card className="w-full max-w-4xl h-[80vh] flex flex-col shadow-xl border-0 bg-white/80 backdrop-blur-sm">
-        <CardHeader className="border-b border-gray-200/50 bg-white/50 backdrop-blur-sm">
-          <CardTitle className="flex items-center gap-2 text-gray-800">
-            <Bot className="w-6 h-6 text-blue-600" />
-            AI Assistant
-            <span className="ml-auto text-sm font-normal text-gray-500">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4 flex items-center justify-center">
+      <Card className="w-full max-w-2xl h-[600px] flex flex-col shadow-xl">
+        <CardHeader className="border-b bg-white/50 backdrop-blur-sm">
+          <CardTitle className="flex items-center gap-3">
+            <Avatar className="h-10 w-10">
+              <AvatarImage src="/ai-robot-avatar.png" />
+              <AvatarFallback className="bg-blue-500 text-white">
+                <Bot className="h-5 w-5" />
+              </AvatarFallback>
+            </Avatar>
+            <div>
+              <h3 className="text-lg font-semibold">AI Assistant</h3>
+              <p className="text-sm text-muted-foreground">Always here to help</p>
+            </div>
+            <Badge variant="secondary" className="ml-auto">
               Online
-            </span>
+            </Badge>
           </CardTitle>
         </CardHeader>
-        
-        <CardContent className="flex-1 p-0 flex flex-col">
-          <ScrollArea className="flex-1 p-6">
-            <div className="space-y-6">
+
+        <CardContent className="flex-1 p-0">
+          <ScrollArea className="h-full p-4" ref={scrollAreaRef}>
+            <div className="space-y-4">
               {messages.map((message) => (
                 <div
                   key={message.id}
                   className={`flex gap-3 ${
-                    message.role === 'user' ? 'justify-end' : 'justify-start'
+                    message.sender === 'user' ? 'justify-end' : 'justify-start'
                   }`}
                 >
-                  {message.role === 'bot' && (
-                    <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
-                      <Bot className="w-4 h-4 text-blue-600" />
-                    </div>
+                  {message.sender === 'bot' && (
+                    <Avatar className="h-8 w-8 mt-1">
+                      <AvatarImage src="/ai-robot-avatar.png" />
+                      <AvatarFallback className="bg-blue-500 text-white">
+                        <Bot className="h-4 w-4" />
+                      </AvatarFallback>
+                    </Avatar>
                   )}
                   
                   <div
-                    className={`max-w-[70%] rounded-2xl px-4 py-3 ${
-                      message.role === 'user'
-                        ? 'bg-blue-600 text-white rounded-br-md'
-                        : 'bg-gray-100 text-gray-800 rounded-bl-md'
+                    className={`max-w-[80%] rounded-lg px-4 py-2 ${
+                      message.sender === 'user'
+                        ? 'bg-blue-500 text-white'
+                        : 'bg-white border shadow-sm'
                     }`}
                   >
-                    <p className="text-sm leading-relaxed whitespace-pre-wrap">
-                      {message.content}
-                    </p>
+                    <p className="text-sm">{message.content}</p>
                     <p
-                      className={`text-xs mt-2 ${
-                        message.role === 'user'
+                      className={`text-xs mt-1 ${
+                        message.sender === 'user'
                           ? 'text-blue-100'
-                          : 'text-gray-500'
+                          : 'text-muted-foreground'
                       }`}
                     >
                       {formatTime(message.timestamp)}
                     </p>
                   </div>
-                  
-                  {message.role === 'user' && (
-                    <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center flex-shrink-0 mt-1">
-                      <User className="w-4 h-4 text-white" />
-                    </div>
+
+                  {message.sender === 'user' && (
+                    <Avatar className="h-8 w-8 mt-1">
+                      <AvatarImage src="/diverse-user-avatars.png" />
+                      <AvatarFallback className="bg-slate-500 text-white">
+                        <User className="h-4 w-4" />
+                      </AvatarFallback>
+                    </Avatar>
                   )}
                 </div>
               ))}
-              
+
               {isTyping && (
                 <div className="flex gap-3 justify-start">
-                  <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
-                    <Bot className="w-4 h-4 text-blue-600" />
-                  </div>
-                  <div className="bg-gray-100 text-gray-800 rounded-2xl rounded-bl-md px-4 py-3">
+                  <Avatar className="h-8 w-8 mt-1">
+                    <AvatarImage src="/ai-robot-avatar.png" />
+                    <AvatarFallback className="bg-blue-500 text-white">
+                      <Bot className="h-4 w-4" />
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="bg-white border shadow-sm rounded-lg px-4 py-2">
                     <div className="flex space-x-1">
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                      <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce"></div>
+                      <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                      <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                     </div>
                   </div>
                 </div>
               )}
             </div>
           </ScrollArea>
-          
-          <div className="border-t border-gray-200/50 bg-white/50 backdrop-blur-sm p-4">
-            <div className="flex gap-3 items-end">
-              <div className="flex-1">
-                <Input
-                  value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  placeholder="Type your message..."
-                  className="resize-none border-gray-200 focus:border-blue-500 focus:ring-blue-500 rounded-xl bg-white/80 backdrop-blur-sm"
-                  disabled={isTyping}
-                />
-              </div>
-              <Button
-                onClick={handleSendMessage}
-                disabled={!inputValue.trim() || isTyping}
-                className="rounded-xl bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 transition-colors duration-200"
-              >
-                <Send className="w-4 h-4" />
-              </Button>
-            </div>
-            <p className="text-xs text-gray-500 mt-2 text-center">
-              Press Enter to send, Shift + Enter for new line
-            </p>
-          </div>
         </CardContent>
+
+        <CardFooter className="border-t bg-white/50 backdrop-blur-sm p-4">
+          <div className="flex w-full gap-2">
+            <Input
+              placeholder="Type your message..."
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyPress={handleKeyPress}
+              className="flex-1"
+              disabled={isTyping}
+            />
+            <Button 
+              onClick={handleSendMessage} 
+              disabled={!inputValue.trim() || isTyping}
+              size="icon"
+              className="shrink-0"
+            >
+              <Send className="h-4 w-4" />
+            </Button>
+          </div>
+        </CardFooter>
       </Card>
     </div>
   )
