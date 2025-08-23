@@ -77,3 +77,11 @@ Copy
  - to see .env TURSO_DATABASE_URL=""
 
     $ turso db show develop
+
+
+
+
+    # .env exempla
+
+    TURSO_DATABASE_URL="libsql://develop-lookjota.aws-us-east-1.turso.io"
+TURSO_AUTH_TOKEN="eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhIjoicnciLCJnaWQiOiI1YTZlMGNlZS1jZGM1LTQwNjQtYWI4ZS00NTEyYjkzN2U2ZjkiLCJpYXQiOjE3NTU5NjUxNTQsInJpZCI6IjcxY2Q0Y2MwLTkwNTItNGE2Ny1iMmQyLWRkNGZjYmRmNWRiMyJ9.FmEfWm5Yb3kPKS7KQ20qTH5tyLTzNLEnIBjmUkJg1UsOJ473oAsMeXdsZ92uMEWrq521GnzXrIV7f9p-MUHUBw"
