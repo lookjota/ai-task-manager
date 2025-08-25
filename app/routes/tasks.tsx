@@ -1,19 +1,37 @@
-export default function TasksPage() {
-  return (
-    <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-      <div className="px-4 lg:px-6">
-        <h2 className="text-2xl font-bold tracking-tight">Tarefas</h2>
-        <p className="text-muted-foreground">
-          Gerencie suas tarefas e projetos aqui.
-        </p>
-      </div>
-      <div className="px-4 lg:px-6">
-        <div className="rounded-lg border p-8 text-center">
-          <p className="text-muted-foreground">
-            Conteúdo das tarefas será implementado aqui.
-          </p>
-        </div>
-      </div>
-    </div>
-  )
+import { TasksList } from "~/features/tasks/tasks-list"
+import { turso } from "~/turso";
+
+export async function loader() {
+  try {
+    console.log("Attempting to connect to Turso database...");
+    
+    // Test database connection and get users
+    const result = await turso.execute("SELECT * FROM users LIMIT 5");
+    
+    console.log("Database connection successful, found users:", result.rows.length);
+    
+    return {
+      users: result.rows,
+      success: true
+    };
+  } catch (error) {
+    console.error("Database connection error:", error);
+    
+    // Log more details about the error
+    if (error instanceof Error) {
+      console.error("Error name:", error.name);
+      console.error("Error message:", error.message);
+      console.error("Error stack:", error.stack);
+    }
+    
+    return {
+      users: [],
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error"
+    };
+  }
+}
+
+export default function Tasks() {
+  return <TasksList />
 }
