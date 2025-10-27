@@ -2,8 +2,8 @@
 import { createClient } from "@libsql/client"
 
 // Environment variables are exposed through Vite's define configuration
-const databaseUrl = process.env.TURSO_DATABASE_URL;
-const authToken = process.env.TURSO_AUTH_TOKEN;
+const databaseUrl = process.env.TURSO_DATABASE_URL!;
+const authToken = process.env.TURSO_AUTH_TOKEN!;
 
 if (!databaseUrl) {
   throw new Error("TURSO_DATABASE_URL environment variable is required");

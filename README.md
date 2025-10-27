@@ -85,3 +85,119 @@ This template comes with [Tailwind CSS](https://tailwindcss.com/) already config
 ---
 
 Built with ❤️ using React Router.
+
+
+
+### turso
+
+O que é Turso Database
+
+O Turso é um sistema de banco de dados “embedado” (in-process) com compatibilidade com SQLite. 
+
+- turso comands
+
+    $ turso auth login
+
+    $ turso db show develop
+     > show .env information
+    
+Introduction
+The Turso CLI gives you everything you need from the command line to manage your database, API tokens, inviting users, and launching the database shell. If you’re waiting for a migration to run, there’s also a relax command. You can also programmatically manage your Turso account, including groups, databases, organizations and invites using the Platform API.
+1
+
+Install
+Begin by installing the Turso CLI:
+Copy
+
+    $ brew install tursodatabase/tap/turso
+
+2
+
+Authenticate
+Now signup or login:
+Copy
+
+    $ turso auth signup
+
+3
+
+Operate
+The Turso CLI provides the following commands:
+
+ Command	Description
+
+    auth - Authenticate and manage API tokens.
+
+    contact - Submit your feedback, ideas and create a meeting with the team.
+
+    db - Create and manage databases, access tokens and connect to the shell.
+
+    dev - Run Turso locally for development.
+
+    group - Create groups for databases with a shared location.
+
+    org - Manage billing and invite members.
+
+    plan - overages, select, show, upgrade
+    
+    quickstart - Get started with Turso in 5 minutes.
+
+    relax - Take some time out and relax with Turso.
+
+    update - Update to the Turso CLI to the latest version with one command.
+
+
+ - Show databases
+
+    $ turso db list
+
+ - create a databse
+
+    $ turso db create prodution
+
+ - show all data of database
+
+    $ turso db show prodution
+
+ - start an interactive SQL shell with:
+
+    $ turso db shell production
+
+ - to get a authentication token for the database, run
+
+    $ turso db tokens create production
+
+
+ ####
+
+ https://docs.turso.tech/tursodb/quickstart
+
+  - install 
+
+    $ npm install @libsql/client
+
+
+  - Initialize a new client
+
+  In app create a folder 
+  
+  @turso.ts
+
+    export constant call turso
+
+import { createClient } from "@libsql/client"
+
+export const turso = createClient({
+    url: process.env.TURSO_DATABASE_URL,
+    authToken: process.env.TURSO_AUTH_TOKEN,
+})
+
+
+####
+
+create file
+
+@ .env
+
+using the correct credentials
+
