@@ -7,7 +7,8 @@ export function useRouteTitle() {
   const routeTitles: Record<string, string> = {
     "/": "Dashboard",
     "/dashboard": "Dashboard", 
-    "/tasks": "Tarefas",
+    "/tasks": "Tasks",
+    "/users": "Users"
   };
   
   // Obtém o título baseado no pathname atual
