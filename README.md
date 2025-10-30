@@ -201,3 +201,89 @@ create file
 
 using the correct credentials
 
+####
+
+### install and configure Prisma
+
+
+https://www.prisma.io/docs
+
+https://www.prisma.io/docs/guides
+
+https://www.prisma.io/docs/guides/react-router-7
+
+
+
+2. Install and Configure Prisma
+2.1. Install dependencies
+
+To get started with Prisma, you'll need to install a few dependencies:
+
+    Prisma Postgres (recommended)
+    Other databases
+
+npm install prisma tsx --save-dev
+
+
+
+after install
+
+
+Once installed, initialize Prisma in your project:
+
+Once installed, initialize Prisma in your project:
+
+npx prisma init --db --output ../app/generated/prisma
+
+remove --db
+
+npx prisma init --output ../app/generated/prisma
+
+
+### modify .env
+
+
+DATABASE_URL="file:./database/database.sqlite"
+
+@ prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id    Int     @id @default(autoincrement())
+  email String  @unique
+  age int?  
+  name  String?
+  posts Post[]
+}
+
+model Post {
+  id        Int     @id @default(autoincrement())
+  title     String
+  content   String?
+  published Boolean @default(false)
+  authorId  Int
+  author    User    @relation(fields: [authorId], references: [id])
+}
+
+
+to create a file sql
+
+create a database and execute the commands
+
+$ npx prisma migrate dev --name init
+
+database creatednpx prisma migrate dev --name init
+
+
+to update the modify
+
+$ npx prisma migrate dev --name add age to user
