@@ -356,3 +356,10 @@ $ @PRD.md @schema.prisma utilizando os dados do PRD, cre novo model Task porem n
 ## to create database table
 
   $ npx prisma db push 
+
+
+  ### keep coding time 
+
+  populating the database with fictitious data
+
+  16:00 time
