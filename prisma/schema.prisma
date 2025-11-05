@@ -35,3 +35,20 @@ model Post {
 
   @@map("posts")
 }
+
+model Task {
+  id                        String   @id @default(uuid())
+  title                     String
+  description               String
+  steps                     String? // JSON string or markdown list
+  estimated_time            String
+  implementation_suggestion String?
+  acceptance_criteria       String? // JSON string or markdown list
+  suggested_tests           String? // JSON string or markdown list
+  content                   String? // Combined markdown
+  chat_history              Json?
+  created_at                DateTime @default(now())
+  updated_at                DateTime @updatedAt
+
+  @@map("tasks")
+}

@@ -1,17 +1,19 @@
+import prisma from "prisma/prisma";
 import { TasksList } from "~/features/tasks/tasks-list"
-import { turso } from "~/turso";
+// import { turso } from "~/turso";
 
 export async function loader() {
   try {
     console.log("Attempting to connect to Turso database...");
     
     // Test database connection and get users
-    const result = await turso.execute("SELECT * FROM users LIMIT 5");
+    // const result = await turso.execute("SELECT * FROM users LIMIT 5");
     
-    console.log("Database connection successful, found users:", result.rows.length);
+    // console.log("Database connection successful, found users:", result.rows.length);
     
     return {
-      users: result.rows,
+      tasks: await prisma.task.findMany(),
+      users: await prisma.user.findMany(),
       success: true
     };
   } catch (error) {
@@ -25,7 +27,7 @@ export async function loader() {
     }
     
     return {
-      users: [],
+      tasks: [],
       success: false,
       error: error instanceof Error ? error.message : "Unknown error"
     };

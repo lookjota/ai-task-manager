@@ -7,7 +7,8 @@
     "dev": "react-router dev",
     "start": "react-router-serve ./build/server/index.js",
     "typecheck": "react-router typegen && tsc",
-    "db:sync": "tsx scripts/sync-turso-tables.ts"
+    "db:sync": "tsx scripts/sync-turso-tables.ts",
+    "db:seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
@@ -50,6 +51,7 @@
     "zod": "^4.0.14"
   },
   "devDependencies": {
+    "@faker-js/faker": "^10.1.0",
     "@react-router/dev": "^7.7.1",
     "@tailwindcss/vite": "^4.1.4",
     "@types/node": "^20",

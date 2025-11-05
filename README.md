@@ -331,3 +331,28 @@ export default prisma
 - will create a table of database
 
   $ npx prisma db push
+
+
+
+  npm run db:sync
+
+
+## command AI to keep coding
+
+Ai
+
+$ crie um seed.ts em prisma. Precido de 20 usuarios e 60 posts. Utilize fake.ts para os dados
+
+## terminal update database
+
+  $ npx prisma db seed
+
+
+## coomand Ai keep coding
+
+$ @PRD.md @schema.prisma utilizando os dados do PRD, cre novo model Task porem nao eh necessario vincular a um usuario. Deixemos simples por enquanto
+
+
+## to create database table
+
+  $ npx prisma db push 

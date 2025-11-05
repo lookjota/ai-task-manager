@@ -48,6 +48,36 @@ async function syncTables() {
         REFERENCES "users" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
       )
     `);
+    
+    // Create tasks table
+    console.log("Creating tasks table...");
+    await client.execute(`
+      CREATE TABLE IF NOT EXISTS "tasks" (
+        "id" TEXT NOT NULL PRIMARY KEY,
+        "title" TEXT NOT NULL,
+        "description" TEXT NOT NULL,
+        "steps" TEXT,
+        "estimated_time" TEXT NOT NULL,
+        "implementation_suggestion" TEXT,
+        "acceptance_criteria" TEXT,
+        "suggested_tests" TEXT,
+        "content" TEXT,
+        "chat_history" TEXT,
+        "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "updated_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+    
+    // Create trigger to update updated_at automatically
+    console.log("Creating trigger for updated_at...");
+    await client.execute(`
+      CREATE TRIGGER IF NOT EXISTS update_tasks_updated_at
+      AFTER UPDATE ON tasks
+      FOR EACH ROW
+      BEGIN
+        UPDATE tasks SET updated_at = CURRENT_TIMESTAMP WHERE id = NEW.id;
+      END
+    `);
 
     console.log("✅ Tables created successfully!");
     

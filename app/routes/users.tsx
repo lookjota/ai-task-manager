@@ -1,4 +1,3 @@
-import { turso } from "~/turso";
 import type { Route } from "./+types/users";
 import {
   Table,
@@ -9,12 +8,13 @@ import {
   TableRow,
 } from "~/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
+import prisma from "prisma/prisma";
 
 export async function loader() {
-    const response = await turso.execute("SELECT * FROM users")
+    // const response = await turso.execute("SELECT * FROM users")
     
     return {
-        users: response.rows,
+        users: await prisma.user.findMany(),
     }
 }
 
@@ -34,18 +34,16 @@ export default function ({ loaderData }: Route.ComponentProps) {
                                 <TableHead>ID</TableHead>
                                 <TableHead>Name</TableHead>
                                 <TableHead>Email</TableHead>
-                                <TableHead>Created At</TableHead>
-                                <TableHead>Updated At</TableHead>
+                                <TableHead>Age</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {users.map((user: any) => (
                                 <TableRow key={user.id}>
                                     <TableCell>{user.id}</TableCell>
-                                    <TableCell>{user.name}</TableCell>
+                                    <TableCell>{user.name || '-'}</TableCell>
                                     <TableCell>{user.email}</TableCell>
-                                    <TableCell>{new Date(user.created_at).toLocaleDateString()}</TableCell>
-                                    <TableCell>{new Date(user.updated_at).toLocaleDateString()}</TableCell>
+                                    <TableCell>{user.age || '-'}</TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
