@@ -10,4 +10,14 @@ export default defineConfig({
   datasource: {
     url: env("DATABASE_URL"),
   },
+
+
+  // migrate: {
+  //   async adapter(env) {
+  //     return new PrismaLibSQL({
+  //       url: env.TURSO_DATABASE_URL,
+  //       authToken: env.TURSO_AUTH_TOKEN,
+  //     });
+  //   }
+  // }
 });

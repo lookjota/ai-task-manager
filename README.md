@@ -281,9 +281,53 @@ create a database and execute the commands
 
 $ npx prisma migrate dev --name init
 
-database creatednpx prisma migrate dev --name init
+database created = npx prisma migrate dev --name init
 
 
 to update the modify
 
 $ npx prisma migrate dev --name add age to user
+
+
+@ schema.prisma
+
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+  previewfeatures = ["driverAdapters"]
+}
+
+
+
+generate prisma client
+
+  $ npx prisma generate
+
+
+  @ prisma/prisma.ts
+
+
+  import { PrismaClient } from '~/generated/prisma/client'
+import { withAccelerate } from '@prisma/extension-accelerate'
+
+const globalForPrisma = globalThis as unknown as {
+    prisma: PrismaClient
+}
+
+const prisma = globalForPrisma.prisma || new PrismaClient().$extends(withAccelerate())
+
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
+
+export default prisma
+
+
+### install adapter-libsql
+
+  $ npm install @prisma/adapter-libsql
+
+
+  ### update changes in @schema.prisma
+
+- will create a table of database
+
+  $ npx prisma db push
