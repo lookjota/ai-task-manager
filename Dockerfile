@@ -1,19 +1,35 @@
-FROM node:20-slim AS base
-ENV NODE_ENV=production
-ENV PORT=3000
+# syntax = docker/dockerfile:1
+
+FROM node:20-slim as builder
 
 WORKDIR /app
 
 # Install dependencies
 COPY package*.json ./
-RUN npm ci --only=production
+RUN npm install
 
-# Copy build files
+# Copy source
 COPY . .
+
+# Build application
 RUN npm run build
 
-# Clean up development dependencies
+# Remove development dependencies
 RUN npm prune --production
 
+# Runtime stage
+FROM node:20-slim as runtime
+
+WORKDIR /app
+
+# Copy built assets and production dependencies
+COPY --from=builder /app/build ./build
+COPY --from=builder /app/node_modules ./node_modules
+COPY package*.json ./
+
+ENV NODE_ENV=production
+ENV PORT=3000
+
 EXPOSE 3000
+
 CMD ["npm", "run", "start"]

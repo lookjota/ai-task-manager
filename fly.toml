@@ -2,7 +2,8 @@ app = "ai-task-manager"
 primary_region = "atl"
 
 [build]
-  dockerfile = "Dockerfile"
+  builder = "heroku/buildpacks:20"
+  buildpacks = ["heroku/nodejs"]
 
 [http_service]
   internal_port = 3000
