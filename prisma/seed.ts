@@ -53,10 +53,11 @@ async function main() {
     }
   }
 
-  // Create 10 tasks
+  // Create 10 tasks and associate with random users
   console.log("\n📋 Creating 10 tasks...");
   for (let i = 0; i < 10; i++) {
-    const taskData = fakeTask();
+    const randomUser = users[Math.floor(Math.random() * users.length)];
+    const taskData = fakeTask(randomUser.id);
     const task = await prisma.task.create({
       data: taskData,
     });
@@ -66,7 +67,6 @@ async function main() {
   console.log("\n✅ Seed completed successfully!");
   console.log(`   - Created ${users.length} users`);
   console.log(`   - Created 60 posts`);
-  console.log(`   - Created 10 tasks`);
 }
 
 main()

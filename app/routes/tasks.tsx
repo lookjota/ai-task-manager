@@ -12,7 +12,7 @@ export async function loader() {
     // console.log("Database connection successful, found users:", result.rows.length);
     
     return {
-      tasks: await prisma.task.findMany(),
+      tasks: await prisma.task.findMany({ include: { author: true } }),
       users: await prisma.user.findMany(),
       success: true
     };

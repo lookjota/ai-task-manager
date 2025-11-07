@@ -21,6 +21,11 @@ type LoaderData = {
     suggested_tests: string | null;
     content: string | null;
     chat_history: any;
+    author?: {
+      id: number;
+      name?: string | null;
+      email?: string;
+    } | null;
     created_at: Date;
     updated_at: Date;
   }>;
@@ -58,6 +63,7 @@ export function TasksList() {
               <TableHeader>
                 <TableRow>
                   <TableHead>ID</TableHead>
+                  <TableHead>Name</TableHead>
                   <TableHead>Title</TableHead>
                   <TableHead>Description</TableHead>
                   <TableHead>Estimated Time</TableHead>
@@ -69,7 +75,9 @@ export function TasksList() {
                 {tasks.map((task) => (
                   <TableRow key={task.id}>
                     <TableCell className="font-mono text-xs">{task.id.slice(0, 8)}...</TableCell>
-                    <TableCell className="font-medium">{task.title}</TableCell>
+                      {/* Show associated user name (or '-') to match Users table */}
+                      <TableCell className="font-medium">{task.author?.name || '-'}</TableCell>
+                      <TableCell className="font-medium">{task.title}</TableCell>
                     <TableCell className="max-w-md truncate">{task.description}</TableCell>
                     <TableCell>{task.estimated_time}</TableCell>
                     <TableCell>{new Date(task.created_at).toLocaleDateString()}</TableCell>

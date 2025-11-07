@@ -67,6 +67,13 @@ async function syncTables() {
         "updated_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
       )
     `);
+    // If the existing table was created before adding author_id, add the column now.
+    const info = await client.execute("PRAGMA table_info('tasks')");
+    const columns = info.rows.map((r) => r.name);
+    if (!columns.includes('author_id')) {
+      console.log('Adding author_id column to tasks table...');
+      await client.execute(`ALTER TABLE tasks ADD COLUMN "author_id" INTEGER`);
+    }
     
     // Create trigger to update updated_at automatically
     console.log("Creating trigger for updated_at...");
