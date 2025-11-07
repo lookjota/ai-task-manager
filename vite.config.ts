@@ -8,6 +8,30 @@ export default defineConfig(({ mode }) => {
   
   return {
     plugins: [tailwindcss(), reactRouter(), tsconfigPaths()],
+    build: {
+      // Increase chunk size limit to avoid warnings for larger chunks
+      chunkSizeWarningLimit: 1000,
+      rollupOptions: {
+        external: ['@react-router/dev'], // Exclude dev dependencies
+        output: {
+          manualChunks: (id) => {
+            // Create chunks based on dependencies
+            if (id.includes('node_modules')) {
+              if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
+                return 'vendor-react';
+              }
+              if (id.includes('@radix-ui') || id.includes('@shadcn')) {
+                return 'vendor-ui';
+              }
+              if (id.includes('@prisma') || id.includes('@libsql')) {
+                return 'vendor-db';
+              }
+              return 'vendor'; // Other dependencies
+            }
+          }
+        }
+      }
+    },
     define: {
       // Expose environment variables to the client
       'process.env.TURSO_DATABASE_URL': JSON.stringify(env.TURSO_DATABASE_URL),
