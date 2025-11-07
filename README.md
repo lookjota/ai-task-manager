@@ -363,3 +363,23 @@ $ @PRD.md @schema.prisma utilizando os dados do PRD, cre novo model Task porem n
   populating the database with fictitious data
 
   16:00 time
+
+
+  ### start build application
+
+
+  $ npm run build
+
+
+  ### Hosting
+
+  fly.io
+
+  nettlify
+
+  versell
+
+
+fly.io
+  docker file
+
