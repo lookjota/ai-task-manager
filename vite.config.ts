@@ -1,13 +1,15 @@
-import { reactRouter } from "@react-router/dev/vite";
 import tailwindcss from "@tailwindcss/vite";
+import { reactRouter } from "@react-router/dev/vite";
 import { defineConfig, loadEnv } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
-  
+
+  const plugins: any[] = [tailwindcss(), reactRouter(), tsconfigPaths()];
+
   return {
-    plugins: [tailwindcss(), reactRouter(), tsconfigPaths()],
+    plugins,
     build: {
       // Increase chunk size limit to avoid warnings for larger chunks
       chunkSizeWarningLimit: 1000,
