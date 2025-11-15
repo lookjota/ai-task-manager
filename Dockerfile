@@ -12,6 +12,8 @@ RUN npm install
 COPY . .
 
 # Build application
+# Generate Prisma client for the build environment (creates ~/app/generated/prisma)
+RUN npx prisma generate
 RUN npm run build
 
 # Remove development dependencies
