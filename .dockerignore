@@ -2,3 +2,24 @@
 build
 node_modules
 README.md
+
+# Ignore local databases and prisma native engines
+database
+# Ignore only Prisma native engine binaries (keep generated JS client in repo)
+app/generated/prisma/*libquery_engine*.so.node
+app/generated/prisma/*.so.node
+prisma/migrations
+prisma/database
+
+# Ignore editor and CI metadata
+.git
+.github
+.cursor
+.vscode
+
+# Ignore local docs and other large non-essential folders
+local-docs
+public/cap_*
+
+# Env and secrets
+.env
