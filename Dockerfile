@@ -14,6 +14,8 @@ COPY . .
 # Build application
 # Generate Prisma client for the build environment (creates ~/app/generated/prisma)
 ENV DATABASE_URL="file:./database/database.sqlite"
+# Force regenerate with cache bust to ensure latest schema is used
+RUN rm -rf app/generated/prisma
 RUN npx prisma generate || true
 RUN npm run build
 
