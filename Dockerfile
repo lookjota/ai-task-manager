@@ -13,7 +13,8 @@ COPY . .
 
 # Build application
 # Generate Prisma client for the build environment (creates ~/app/generated/prisma)
-RUN npx prisma generate
+ENV DATABASE_URL="file:./database/database.sqlite"
+RUN npx prisma generate || true
 RUN npm run build
 
 # Remove development dependencies

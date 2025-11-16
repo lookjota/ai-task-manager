@@ -1,5 +1,9 @@
 import "dotenv/config";
-import { defineConfig, env } from "prisma/config";
+import { defineConfig } from "prisma/config";
+
+// Use process.env with a sensible fallback so `prisma generate` can run during container builds
+// when DATABASE_URL is not provided as a build-time env var.
+const databaseUrl = process.env.DATABASE_URL ?? 'file:./database/database.sqlite';
 
 export default defineConfig({
   schema: "prisma/schema.prisma",
@@ -8,7 +12,7 @@ export default defineConfig({
   },
   engine: "classic",
   datasource: {
-    url: env("DATABASE_URL"),
+    url: databaseUrl,
   },
 
 
