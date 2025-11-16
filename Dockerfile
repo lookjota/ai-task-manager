@@ -23,11 +23,16 @@ RUN npm prune --production
 # Runtime stage
 FROM node:20-slim as runtime
 
+# Install OpenSSL (required by Prisma for database connections)
+RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 
 # Copy built assets and production dependencies
 COPY --from=builder /app/build ./build
 COPY --from=builder /app/node_modules ./node_modules
+# Copy generated Prisma client (includes Query Engine binaries needed at runtime)
+COPY --from=builder /app/app/generated/prisma ./app/generated/prisma
 COPY package*.json ./
 
 ENV NODE_ENV=production
