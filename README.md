@@ -64,6 +64,28 @@ The containerized application can be deployed to any platform that supports Dock
 - Fly.io
 - Railway
 
+### Deployment on Render.com
+
+To deploy this application to Render.com with Turso database:
+
+1. **Create a Web Service on Render**:
+   - Connect your GitHub repository
+   - Select the repository and branch to deploy
+   - Choose Node as the runtime
+
+2. **Set Environment Variables** in Render dashboard:
+   - `TURSO_DATABASE_URL`: Your Turso database URL (e.g., `libsql://your-db.aws-us-east-1.turso.io`)
+   - `TURSO_AUTH_TOKEN`: Your Turso authentication token
+   - `NODE_ENV`: Set to `production`
+
+3. **Configure Build & Start Commands**:
+   - Build Command: `npm run build`
+   - Start Command: `npm run start`
+
+The Docker image will automatically handle Prisma client generation with the correct binary targets for Render's environment.
+
+> **Note**: Make sure to keep `TURSO_DATABASE_URL` and `TURSO_AUTH_TOKEN` private. Use Render's secret management to store sensitive values.
+
 ### DIY Deployment
 
 If you're familiar with deploying Node applications, the built-in app server is production-ready.

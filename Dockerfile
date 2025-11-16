@@ -39,6 +39,7 @@ COPY package*.json ./
 
 ENV NODE_ENV=production
 ENV PORT=3000
+# Note: TURSO_DATABASE_URL and TURSO_AUTH_TOKEN should be set via Render environment variables
 
 EXPOSE 3000
 
