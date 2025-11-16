@@ -7,41 +7,51 @@ const globalForPrisma = globalThis as unknown as {
     prisma?: any
 }
 
-// Prefer explicit TURSO_* env vars (used in production), otherwise fall back to DATABASE_URL
-// This prevents startup crashes when a hosting platform hasn't set secrets.
-const tursoUrl = process.env.TURSO_DATABASE_URL ?? process.env.DATABASE_URL
+// Turso is required for production. DATABASE_URL is only for local development with sqlite.
+const tursoUrl = process.env.TURSO_DATABASE_URL
 const tursoToken = process.env.TURSO_AUTH_TOKEN
+const databaseUrl = process.env.DATABASE_URL
 
 let prisma: any
 
-if (tursoUrl && tursoToken) {
-    // If both Turso URL and token exist, use the LibSQL adapter
-    try {
-        const adapter = new PrismaLibSQL({
-            url: tursoUrl,
-            authToken: tursoToken,
-        })
-
-        prisma = globalForPrisma.prisma || new PrismaClient({ adapter }).$extends(withAccelerate())
-        if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
-    } catch (err: any) {
-        // If adapter construction fails, surface a clear error (but don't leave an undefined prisma)
-        console.error('[prisma] Failed to initialize Prisma LibSQL adapter:', err?.message ?? err)
-        console.error('[prisma] Falling back to default Prisma client using DATABASE_URL if available.')
-        prisma = globalForPrisma.prisma || new PrismaClient().$extends(withAccelerate())
-        if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
-    }
-} else if (process.env.DATABASE_URL) {
-    // No Turso credentials — use DATABASE_URL (e.g. local sqlite) so app can start
-    console.warn('[prisma] TURSO_DATABASE_URL or TURSO_AUTH_TOKEN not set. Using DATABASE_URL fallback.')
-    prisma = globalForPrisma.prisma || new PrismaClient().$extends(withAccelerate())
-    if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
-} else {
-    // Neither TURSO nor DATABASE_URL provided — log an explicit error and create a Prisma client
-    // This avoids an immediate crash with a vague 'undefined' error and provides actionable logs.
-    console.error('[prisma] No database configuration detected. Please set TURSO_DATABASE_URL and TURSO_AUTH_TOKEN, or DATABASE_URL for sqlite.')
-    prisma = globalForPrisma.prisma || new PrismaClient().$extends(withAccelerate())
-    if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
+// In production, require explicit Turso configuration
+if (process.env.NODE_ENV === 'production') {
+  if (!tursoUrl || !tursoToken) {
+    const errorMsg = 
+      'FATAL: Production deployment requires Turso database credentials.\n' +
+      'Please set the following environment variables in your hosting platform:\n' +
+      '  - TURSO_DATABASE_URL (e.g., libsql://your-db.turso.io)\n' +
+      '  - TURSO_AUTH_TOKEN (your Turso auth token)\n' +
+      '\nFor Render.com, add these in your service Environment settings.\n' +
+      'For other platforms, consult their environment variable documentation.\n' +
+      '\nDo not rely on DATABASE_URL (sqlite) for production as it will lose data.'
+    console.error('[prisma]', errorMsg)
+    throw new Error(errorMsg)
+  }
 }
 
-export default prisma
+// Try to initialize with Turso if credentials are provided
+if (tursoUrl && tursoToken) {
+  try {
+    const adapter = new PrismaLibSQL({
+      url: tursoUrl,
+      authToken: tursoToken,
+    })
+    prisma = globalForPrisma.prisma || new PrismaClient({ adapter }).$extends(withAccelerate())
+    if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
+    console.log('[prisma] Connected to Turso database')
+  } catch (err: any) {
+    console.error('[prisma] Failed to initialize Turso adapter:', err?.message ?? err)
+    throw err
+  }
+} else if (databaseUrl && process.env.NODE_ENV !== 'production') {
+  // In development, allow sqlite fallback via DATABASE_URL
+  console.warn('[prisma] Using DATABASE_URL (sqlite) fallback. This is for development only.')
+  prisma = globalForPrisma.prisma || new PrismaClient().$extends(withAccelerate())
+  if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
+} else {
+  throw new Error(
+    '[prisma] No database configured. Set TURSO_DATABASE_URL and TURSO_AUTH_TOKEN for production, ' +
+    'or DATABASE_URL for local development.'
+  )
+}export default prisma

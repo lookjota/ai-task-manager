@@ -39,15 +39,7 @@ COPY package*.json ./
 
 ENV NODE_ENV=production
 ENV PORT=3000
-# Note: TURSO_DATABASE_URL and TURSO_AUTH_TOKEN should be set via Render environment variables
 
 EXPOSE 3000
-
-# Ensure the sqlite database directory and file exist and are writable in the runtime container
-# This prevents Prisma from failing with "Unable to open the database file" when DATABASE_URL is
-# a file path but no file/directory was created at build time.
-RUN mkdir -p ./database \
-  && touch ./database/database.sqlite \
-  && chmod 660 ./database/database.sqlite || true
 
 CMD ["npm", "run", "start"]
