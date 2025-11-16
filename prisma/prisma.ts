@@ -12,6 +12,13 @@ const tursoUrl = process.env.TURSO_DATABASE_URL
 const tursoToken = process.env.TURSO_AUTH_TOKEN
 const databaseUrl = process.env.DATABASE_URL
 
+// Debug logging to verify environment variables are loaded
+console.log('[prisma] Environment check:')
+console.log('[prisma]   NODE_ENV:', process.env.NODE_ENV)
+console.log('[prisma]   TURSO_DATABASE_URL set:', !!tursoUrl)
+console.log('[prisma]   TURSO_AUTH_TOKEN set:', !!tursoToken)
+console.log('[prisma]   DATABASE_URL set:', !!databaseUrl)
+
 let prisma: any
 
 // In production, require explicit Turso configuration
@@ -54,4 +61,6 @@ if (tursoUrl && tursoToken) {
     '[prisma] No database configured. Set TURSO_DATABASE_URL and TURSO_AUTH_TOKEN for production, ' +
     'or DATABASE_URL for local development.'
   )
-}export default prisma
+}
+
+export default prisma
