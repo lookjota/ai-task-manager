@@ -40,7 +40,7 @@ export function TasksList() {
     return (
       <div className="p-4">
         <div className="bg-red-50 border border-red-200 rounded-md p-4">
-          <h3 className="text-red-800 font-medium">Database Connection Error</h3>
+          <h3 className="text-red-800 font-medium">Database Connection Error...</h3>
           <p className="text-red-600 mt-1">{data.error}</p>
         </div>
       </div>
