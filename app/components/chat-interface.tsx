@@ -16,68 +16,27 @@ type Message = {
 }
 
 export function ChatInterface() {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "1",
-      content: "Hello! How can I help you today?",
-      role: "assistant",
-      timestamp: new Date(),
-    },
-  ])
+  const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-  }
+  // const scrollToBottom = () => {
+  //   messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+  // }
 
-  useEffect(() => {
-    scrollToBottom()
-  }, [messages])
+  // useEffect(() => {
+  //   scrollToBottom()
+  // }, [messages])
 
-  const handleSendMessage = async () => {
-    if (!input.trim()) return
-
-    // Add user message
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      content: input,
-      role: "user",
-      timestamp: new Date(),
-    }
-
-    setMessages((prev) => [...prev, userMessage])
-    setInput("")
-    setIsLoading(true)
-
-    // Simulate bot response after a delay
-    setTimeout(() => {
-      const botMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        content: `Thanks for your message! This is a simulated response to: "${input}"`,
-        role: "assistant",
-        timestamp: new Date(),
-      }
-      setMessages((prev) => [...prev, botMessage])
-      setIsLoading(false)
-    }, 1000)
-  }
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault()
-      handleSendMessage()
-    }
-  }
 
   return (
-    <Card className="flex flex-col h-[600px] w-full border shadow-sm">
-      <div className="p-4 border-b bg-card">
+    <Card className="flex flex-col h-[calc(100vh-110px)] w-full border shadow-sm pb-0 pt-0">
+      {/* <div className="p-4 border-b bg-card">
         <h2 className="text-xl font-semibold">Chat Assistant</h2>
-      </div>
+      </div> */}
 
-      <ScrollArea className="flex-1 p-4">
+      <ScrollArea className="flex-1 p-4 h-96">
         <div className="space-y-4">
           {messages.map((message) => (
             <div key={message.id} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
@@ -132,13 +91,10 @@ export function ChatInterface() {
       <div className="p-4 border-t mt-auto">
         <div className="flex gap-2">
           <Input
-            placeholder="Type a message..."
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
+            placeholder="Descreva a tarefa..."
             className="flex-1"
           />
-          <Button onClick={handleSendMessage} disabled={!input.trim() || isLoading} size="icon">
+          <Button type="submit" disabled={!input.trim() || isLoading} size="icon">
             <Send className="h-4 w-4" />
           </Button>
         </div>
