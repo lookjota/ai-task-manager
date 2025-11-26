@@ -7,19 +7,16 @@ import { Input } from "~/components/ui/input"
 import { Card } from "~/components/ui/card"
 import { Avatar } from "~/components/ui/avatar"
 import { ScrollArea } from "~/components/ui/scroll-area"
+import type { ChatMessage } from "~/features/tasks/types"
+import { Form, useFetcher } from "react-router"
 
-type Message = {
-  id: string
-  content: string
-  role: "user" | "assistant"
-  timestamp: Date
-}
+
 
 export function ChatInterface() {
-  const [messages, setMessages] = useState<Message[]>([])
-  const [input, setInput] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
+  const [messages, setMessages] = useState<ChatMessage[]>([])
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const fetcher = useFetcher()
+  const isLoading = fetcher.state !== "idle"
 
   // const scrollToBottom = () => {
   //   messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -89,15 +86,19 @@ export function ChatInterface() {
       </ScrollArea>
 
       <div className="p-4 border-t mt-auto">
-        <div className="flex gap-2">
+        <fetcher.Form action="/api/chat" method="POST" className="flex gap-2">
           <Input
+            name="message"
             placeholder="Descreva a tarefa..."
             className="flex-1"
           />
-          <Button type="submit" disabled={!input.trim() || isLoading} size="icon">
+          <Button 
+            type="submit" 
+            disabled={isLoading} size="icon"
+          >
             <Send className="h-4 w-4" />
           </Button>
-        </div>
+        </fetcher.Form>
       </div>
     </Card>
   )
