@@ -7,16 +7,16 @@ import { Input } from "~/components/ui/input"
 import { Card } from "~/components/ui/card"
 import { Avatar } from "~/components/ui/avatar"
 import { ScrollArea } from "~/components/ui/scroll-area"
-import type { ChatMessage } from "~/features/tasks/types"
-import { Form, useFetcher } from "react-router"
+import { Form, useFetcher, useLoaderData } from "react-router"
+import type { loader } from "~/routes/task-new"
 
 
 
 export function ChatInterface() {
-  const [messages, setMessages] = useState<ChatMessage[]>([])
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const fetcher = useFetcher()
   const isLoading = fetcher.state !== "idle"
+  const { chatId, messages } = useLoaderData<typeof loader>()
 
   // const scrollToBottom = () => {
   //   messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -40,21 +40,19 @@ export function ChatInterface() {
               <div className={`flex gap-3 max-w-[80%] ${message.role === "user" ? "flex-row-reverse" : "flex-row"}`}>
                 <Avatar className="h-8 w-8">
                   <div
-                    className={`flex h-full w-full items-center justify-center rounded-full ${
-                      message.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
-                    }`}
+                    className={`flex h-full w-full items-center justify-center rounded-full ${message.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
+                      }`}
                   >
                     {message.role === "user" ? "U" : "A"}
                   </div>
                 </Avatar>
                 <div
-                  className={`rounded-lg p-3 ${
-                    message.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted"
-                  }`}
+                  className={`rounded-lg p-3 ${message.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted"
+                    }`}
                 >
                   <p className="text-sm">{message.content}</p>
                   <p className="text-xs opacity-70 mt-1">
-                    {message.timestamp.toLocaleTimeString([], {
+                    {new Date(message.timestamp).toLocaleTimeString([], {
                       hour: "2-digit",
                       minute: "2-digit",
                     })}
@@ -87,13 +85,14 @@ export function ChatInterface() {
 
       <div className="p-4 border-t mt-auto">
         <fetcher.Form action="/api/chat" method="POST" className="flex gap-2">
+          <input type="hidden" name="chatId" value={chatId ?? ""} />
           <Input
             name="message"
             placeholder="Descreva a tarefa..."
             className="flex-1"
           />
-          <Button 
-            type="submit" 
+          <Button
+            type="submit"
             disabled={isLoading} size="icon"
           >
             <Send className="h-4 w-4" />

@@ -40,10 +40,10 @@ model Post {
 }
 
 model Chat {
-  id         Int      @id @default(autoincrement())
+  id         String   @id @default(uuid())
   title      String?
   content    String
-  task       Task?
+  tasks      Task[]
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
@@ -58,7 +58,7 @@ model Task {
   estimated_time            String
   author_id                 Int?
   author                    User?    @relation(fields: [author_id], references: [id])
-  chat_id                   Int      @unique
+  chat_id                   String
   chat                      Chat     @relation(fields: [chat_id], references: [id])
   implementation_suggestion String?
   acceptance_criteria       String? // JSON string or markdown list

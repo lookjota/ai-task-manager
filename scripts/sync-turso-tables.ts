@@ -90,7 +90,7 @@ async function syncTables() {
     console.log("Creating chats table...");
     await client.execute(`
       CREATE TABLE IF NOT EXISTS "chats" (
-        "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+        "id" TEXT NOT NULL PRIMARY KEY,
         "title" TEXT,
         "content" TEXT NOT NULL,
         "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -103,7 +103,7 @@ async function syncTables() {
     const taskColumns = infoTasks.rows.map((r) => r.name);
     if (!taskColumns.includes('chat_id')) {
       console.log('Adding chat_id column to tasks table...');
-      await client.execute(`ALTER TABLE tasks ADD COLUMN "chat_id" INTEGER`);
+      await client.execute(`ALTER TABLE tasks ADD COLUMN "chat_id" TEXT`);
     }
 
     // Create unique index on chat_id to enforce 1-to-1 relation
@@ -131,7 +131,7 @@ async function syncTables() {
             "steps" TEXT,
             "estimated_time" TEXT NOT NULL,
             "author_id" INTEGER,
-            "chat_id" INTEGER UNIQUE,
+            "chat_id" TEXT UNIQUE,
             "implementation_suggestion" TEXT,
             "acceptance_criteria" TEXT,
             "suggested_tests" TEXT,
