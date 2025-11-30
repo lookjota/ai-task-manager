@@ -118,6 +118,7 @@ O Turso é um sistema de banco de dados “embedado” (in-process) com compatib
 
 - turso comands
 
+- always login turso
     $ turso auth login
 
     $ turso db show develop
@@ -404,4 +405,8 @@ $ @PRD.md @schema.prisma utilizando os dados do PRD, cre novo model Task porem n
 
 fly.io
   docker file
+
+#### Open AI plataform
+
+$ https://platform.openai.com/docs/overview
 
